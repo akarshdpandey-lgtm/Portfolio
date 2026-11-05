@@ -379,6 +379,27 @@ footer a{text-decoration:underline;text-underline-offset:3px}
 }
 
 </style>
+<style>
+/* ===== Mobile fix: Projects section ===== */
+@media (max-width:760px){
+  .projects{grid-template-columns:1fr;gap:14px;perspective:none}
+  .projects>*{min-width:0}
+  .project{padding:18px;transform:none!important;transform-style:flat;will-change:auto}
+  .project .icon,.project h3,.project p,.project ul,.project .tags{transform:none!important}
+  .project::before{display:none}
+  .project-top{flex-wrap:wrap;row-gap:8px}
+  .project h3{font-size:22px;margin:12px 0 5px}
+  .project .icon{width:46px;height:46px;font-size:22px}
+  .project p,.project li{font-size:14px;overflow-wrap:break-word}
+  .featured{grid-template-columns:1fr;gap:16px}
+  .module{padding:12px}
+  .tags{gap:5px;margin-top:12px}
+  .tag{font-size:11px;padding:5px 8px}
+}
+@media (hover:none){
+  .project .module:hover{transform:none;box-shadow:none}
+}
+</style>
 </head>
 <body>
 
@@ -674,6 +695,7 @@ if('IntersectionObserver' in window){
 // 3D Tilt with glare + depth
 function addTilt(el,max){
   if(!el) return;
+  if(window.matchMedia && window.matchMedia('(hover: none), (max-width: 760px)').matches) return;
   el.style.transition='transform .18s ease, box-shadow .25s ease';
   el.addEventListener('mousemove',function(e){
     var r=el.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
@@ -682,6 +704,8 @@ function addTilt(el,max){
   });
   el.addEventListener('mouseleave',function(){el.style.transform=""});
   el.addEventListener('touchstart',function(){ el.style.transform="perspective(900px) rotateX(4deg) translateY(-3px)"; },{passive:true});
+  el.addEventListener('touchend',function(){ el.style.transform=""; },{passive:true});
+  el.addEventListener('touchcancel',function(){ el.style.transform=""; },{passive:true});
 }
 document.querySelectorAll('.tilt').forEach(function(el){addTilt(el,10)});
 document.querySelectorAll('.skill-card').forEach(function(el){addTilt(el,6)});
