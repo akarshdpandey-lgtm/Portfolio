@@ -604,11 +604,11 @@ footer a{text-decoration:underline;text-underline-offset:3px}
     <p style="font-size:13px;margin-top:14px">Prefer email? <a href="mailto:akarshdpandey@gmail.com?subject=Portfolio%20Query" style="text-decoration:underline;font-weight:700">Email Akarsh directly →</a></p>
   </div>
 
-  <form id="contactForm" class="contact-form" action="https://formsubmit.co/akarshdpandey@gmail.com" method="POST" novalidate>
+  <form id="contactForm" class="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
     <h3>Write a query</h3>
     <p>Fill this in and press Send Message. Your message goes to <b>akarshdpandey@gmail.com</b>.</p>
-    <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="access_key" value="2e5fc95c-71e3-4cbd-b0ff-1580c6137be8">
+    <input type="checkbox" name="botcheck" style="display:none">
     <div class="form-row">
       <div class="field"><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" placeholder="Your full name" autocomplete="name" required></div>
       <div class="field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required></div>
@@ -621,7 +621,7 @@ footer a{text-decoration:underline;text-underline-offset:3px}
     <div id="mailtoFallbackWrap" style="display:none;margin-top:10px">
       <a id="mailtoFallback" href="mailto:akarshdpandey@gmail.com" style="display:block;text-align:center;padding:12px;border-radius:999px;border:1.5px solid var(--ink);font-weight:800">Open in Email App Instead →</a>
     </div>
-    <p class="form-note">Delivery via FormSubmit to akarshdpandey@gmail.com. If the service can’t be reached, the button above opens your email app pre-filled to the same address so your query is never lost. Note: the first FormSubmit message may require a one-time activation click in Akarsh’s inbox.</p>
+    <p class="form-note">Delivery via Web3Forms to akarshdpandey@gmail.com. If the service can’t be reached, the button above opens your email app pre-filled to the same address so your query is never lost.</p>
   </form>
 </div></section>
 
@@ -636,7 +636,7 @@ footer a{text-decoration:underline;text-underline-offset:3px}
   var html=items.map(function(i){return "<span>"+i+" ✦</span>"}).join("");
   document.getElementById('marquee').innerHTML=html+html;
 })();
-// Contact form — FormSubmit AJAX with mailto fallback
+// Contact form — Web3Forms AJAX with mailto fallback
 (function(){
   var form=document.getElementById('contactForm'); if(!form) return;
   var btn=document.getElementById('sendBtn'), success=document.getElementById('formSuccess'), errorBox=document.getElementById('formError'), fallbackWrap=document.getElementById('mailtoFallbackWrap'), fallbackLink=document.getElementById('mailtoFallback');
@@ -657,12 +657,13 @@ footer a{text-decoration:underline;text-underline-offset:3px}
     fallbackLink.href=mailto;
     btn.disabled=true; var orig=btn.textContent; btn.textContent='Sending…';
     try{
-      var res=await fetch('https://formsubmit.co/ajax/akarshdpandey@gmail.com',{
+      var res=await fetch('https://api.web3forms.com/submit',{
         method:'POST',
         headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({name:name,email:email,subject:subject,message:message,_subject:subject+' — Portfolio query from '+name,_template:'table'})
+        body:JSON.stringify({access_key:'2e5fc95c-71e3-4cbd-b0ff-1580c6137be8',name:name,email:email,subject:subject+' — Portfolio query from '+name,message:message,from_name:name})
       });
-      if(!res.ok) throw new Error('Form service returned '+res.status);
+      var data=null; try{ data=await res.json(); }catch(_){}
+      if(!res.ok || !data || data.success!==true) throw new Error('Form service returned '+((data&&data.message)||res.status));
       showSuccess(); form.reset();
     }catch(err){
       showError('The form service could not be reached, so we have prepared your message in your email app instead. Tap below to send it to akarshdpandey@gmail.com.');
